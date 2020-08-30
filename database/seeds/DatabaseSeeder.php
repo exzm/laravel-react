@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Arr;
 
 class DatabaseSeeder extends Seeder
 {
@@ -11,6 +13,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // $this->call(UserSeeder::class);
+        for ($i = 0; $i < 5; $i++) {
+            DB::table('tariffs')->insert(
+                [
+                    'name'          => Str::random(10),
+                    'price'         => mt_rand(100, 20000),
+                    'delivery_days' => json_encode(Arr::random(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], 3))
+                ]
+            );
+        }
     }
 }

@@ -6,5 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Tariff extends Model
 {
-    //
+    protected $guarded = [];
+    protected $casts = ['delivery_days' => 'array'];
 }

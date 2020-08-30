@@ -18,7 +18,7 @@ class CreateClientsTable extends Migration
             function (Blueprint $table) {
                 $table->id();
                 $table->string('name')->comment('User name');
-                //$table->string('phone')->unique()->comment('Client phone');
+                $table->string('phone')->unique()->comment('Client phone');
                 $table->timestamps();
             }
         );

@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\OrderController;
+use App\Http\Controllers\Api\OrderController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,4 +14,5 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/order/store', [OrderController::class, 'store'])->name('api-order-store');
+Route::post('orders/store', [OrderController::class, 'store']);
+Route::get('orders', [OrderController::class, 'index']);

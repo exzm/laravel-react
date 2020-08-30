@@ -1,63 +1,60 @@
-import * as React from 'react';
+import React from 'react';
+import {useForm} from 'react-hook-form';
+import DayPicker, { DateUtils } from 'react-day-picker';
+import 'react-day-picker/lib/style.css';
 
-class OrderForm extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {value: ''};
 
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-    }
+const OrderForm = () => {
+    const {handleSubmit, register, errors} = useForm();
+    const onSubmit = values => console.log(values);
 
-    handleChange(event) {
-        this.setState({value: event.target.value});
-    }
+    return (
+        <div>
+            <hr className="my-4"/>
 
-    handleSubmit(event) {
-        fetch('/api/order/store', {
-            method: 'POST',
-            body: JSON.stringify(this.state),
-        }).then(function(response) {
-            console.log(response);
-            return response.json();
-        });
+            <h4 className="mb-5 h4">Example order page</h4>
 
-        event.preventDefault();
-    }
-
-    render() {
-        return (
-            <div>
-                <h1>Новый заказ</h1>
-                <form onSubmit={this.handleSubmit}>
-                    <div className="form-group row">
-                        <label className="col-4 col-form-label"
-                               htmlFor="text">Name</label>
-                        <div className="col-8">
-                            <input id="text" name="text" type="text"
-                                   className="form-control"/>
+            <form className="needs-validation">
+                <div className="form-row">
+                    <div className="col-md-4 mb-3">
+                        <label>Name</label>
+                        <input type="text" className="form-control"
+                               placeholder="Name" required/>
+                        <div className="valid-feedback">
+                            Looks good!
                         </div>
                     </div>
-                    <div className="form-group row">
-                        <label htmlFor="phone"
-                               className="col-4 col-form-label">Phone</label>
-                        <div className="col-8">
-                            <input id="phone" name="phone" type="text"
-                                   className="form-control"
-                                   required="required"/>
+                    <div className="col-md-4 mb-3">
+                        <label>Phone</label>
+                        <input type="text" className="form-control"
+                               placeholder="Phone" value="" required/>
+                        <div className="valid-feedback">
+                            Looks good!
                         </div>
                     </div>
-                    <div className="form-group row">
-                        <div className="offset-4 col-8">
-                            <button name="submit" type="submit"
-                                    className="btn btn-primary">Submit
-                            </button>
+                </div>
+                <div className="form-row">
+                    <div className="col-md-6 mb-3">
+                        <label>Delivery address</label>
+                        <input type="text" className="form-control"
+                               placeholder="Delivery address" required/>
+                        <div className="valid-feedback">
+                            Looks good!
                         </div>
                     </div>
-                </form>
-            </div>
-        );
-    }
-}
+                    <div className="col-md-3 mb-3">
+                        <label>Delivery date</label>
+                        <DayPicker/>
+                        <div className="valid-feedback">
+                            Looks good!
+                        </div>
+                    </div>
+                </div>
+                <button className="btn btn-primary" type="submit">Submit
+                </button>
+            </form>
+        </div>
+    );
+};
 
 export default OrderForm;
