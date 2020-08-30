@@ -27,35 +27,33 @@ RUN apt-get install -y \
     git \
     libpq-dev \
     procps \
-    && pecl install mcrypt-1.0.3 \
     && docker-php-ext-install soap \
-    && docker-php-ext-enable mcrypt \
     && docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg --with-webp \
-    && docker-php-ext-configure pdo_mysql --with-pdo-mysql=mysqlnd \
-    && docker-php-ext-configure mysqli --with-mysqli=mysqlnd \
+    && docker-php-ext-configure pgsql --with-pgsql=/usr/local/pgsql \
     && docker-php-ext-configure intl \
     && docker-php-ext-configure zip \
     && docker-php-ext-install -j$(nproc) gd \
     && docker-php-ext-install -j$(nproc) opcache \
-    && docker-php-ext-install -j$(nproc) pdo_mysql \
-    && docker-php-ext-install -j$(nproc) mysqli \
     && docker-php-ext-install -j$(nproc) pdo \
     && docker-php-ext-install -j$(nproc) intl \
     && docker-php-ext-install -j$(nproc) zip \
+    && docker-php-ext-install -j$(nproc) pgsql \
+    && docker-php-ext-install -j$(nproc) pdo_pgsql \
     && docker-php-ext-install -j$(nproc) sockets \
     && apt-get -y install gcc make autoconf libc-dev pkg-config \
     && apt-get -y install zlib1g-dev \
     && apt-get clean && apt-get autoremove -y
 
-RUN useradd -G www-data,root -u $uid -d /home/$user $user
-RUN mkdir -p /home/$user && chown -R $user:$user /home/$user
-
 ADD ./ /app
 WORKDIR /app
 
-RUN curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer \
-    && composer global require hirak/prestissimo --no-plugins --no-scripts
+RUN useradd -G www-data,root -u $uid -d /app $user
 
-RUN composer install --optimize-autoloader && rm -rf /root/.composer
+RUN curl -sS https://getcomposer.org/installer | php \
+    && php composer.phar global require hirak/prestissimo --no-plugins --no-scripts
+
+RUN php composer.phar install --optimize-autoloader
+
+RUN chown -R $user:$user /app
 
 USER $user
