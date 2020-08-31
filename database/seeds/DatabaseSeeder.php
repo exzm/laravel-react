@@ -17,8 +17,8 @@ class DatabaseSeeder extends Seeder
             DB::table('tariffs')->insert(
                 [
                     'name'          => Str::random(10),
-                    'price'         => mt_rand(100, 20000),
-                    'delivery_days' => json_encode(Arr::random(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], rand(2, 7)))
+                    'price'         => mt_rand(100, 10000),
+                    'delivery_days' => json_encode(Arr::random(range(0, 6), rand(2, 7)))
                 ]
             );
         }
