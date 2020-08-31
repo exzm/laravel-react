@@ -13,7 +13,7 @@ class OrderForm extends React.Component {
             disable_days: [],
             price: null,
             delivery_time: null,
-            errors: [],
+            errors: {},
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -41,7 +41,9 @@ class OrderForm extends React.Component {
         API.post('/api/orders/store', data).then(response => {
             console.log(response);
         }).catch(error => {
-            console.log(error);
+            this.setState({
+                errors: error.response.data.errors,
+            });
         });
 
         event.preventDefault();
@@ -69,8 +71,14 @@ class OrderForm extends React.Component {
         });
     }
 
-    getDisableDays(days) {
-        return [0, 1, 2, 3, 4, 5, 6].filter(day => !days.includes(day));
+    getDisableDays(delivery_days) {
+        return [0, 1, 2, 3, 4, 5, 6].filter(
+            day => !delivery_days.includes(day));
+    }
+
+    getError(field) {
+        console.log(this.state.errors[field]);
+        return this.state.errors[field];
     }
 
     render() {
@@ -92,7 +100,7 @@ class OrderForm extends React.Component {
                                            type="text" className="form-control"
                                            placeholder="Name"/>
                                     <div className="invalid-feedback">
-                                        qwe fsdfsd fs dfsd fsd f
+                                        {this.getError('name')}
                                     </div>
                                 </div>
                                 <div className="col-md-6 mb-3">
