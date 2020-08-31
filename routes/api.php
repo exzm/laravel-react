@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\TariffController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,3 +17,4 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('orders/store', [OrderController::class, 'store']);
 Route::get('orders', [OrderController::class, 'index']);
+Route::get('tariffs', [TariffController::class, 'index']);

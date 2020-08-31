@@ -54,6 +54,4 @@ RUN curl -sS https://getcomposer.org/installer | php \
 
 RUN php composer.phar install --optimize-autoloader
 
-RUN chown -R $user:$user /app
-
 USER $user

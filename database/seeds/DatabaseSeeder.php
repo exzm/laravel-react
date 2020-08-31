@@ -13,12 +13,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             DB::table('tariffs')->insert(
                 [
                     'name'          => Str::random(10),
                     'price'         => mt_rand(100, 20000),
-                    'delivery_days' => json_encode(Arr::random(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], 3))
+                    'delivery_days' => json_encode(Arr::random(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], rand(2, 7)))
                 ]
             );
         }

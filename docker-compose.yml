@@ -11,6 +11,8 @@ services:
     volumes:
       - ./:/app
       - /app/vendor
+    depends_on:
+      - postgres
     networks:
       - backend
 

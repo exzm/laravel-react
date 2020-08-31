@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreOrderRequest;
+use App\Models\Order;
 use App\Services\StoreOrderService;
 
 class OrderController extends Controller
@@ -22,6 +23,8 @@ class OrderController extends Controller
      * Store a newly created resource in storage.
      *
      * @param StoreOrderRequest $request
+     *
+     * @return Order
      */
     public function store(StoreOrderRequest $request)
     {
