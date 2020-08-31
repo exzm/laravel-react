@@ -24,7 +24,7 @@ final class StoreOrderService
         $order->client()->associate($client);
         $order->tariff()->associate($tariff);
         $order->address = $request->get('address');
-        $order->delivery_time = $request->get('delivery_time');
+        $order->delivery_time = date('c', $request->get('delivery_time'));
         $order->save();
 
         return $order;

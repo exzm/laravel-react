@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Tariff;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -24,14 +25,32 @@ class StoreOrderRequest extends FormRequest
      * Get the validation rules that apply to the request.
      *
      * @return array
+     * @todo create rule class for tariff
      */
     public function rules(): array
     {
+        $tariff = $this->get('tariff');
+
         return [
             'name'          => 'required|max:255',
-            'phone'         => 'required',
-            'tariff'        => 'required',
-            'delivery_time' => 'required'
+            'phone'         => 'required|numeric|digits:11|starts_with:8',
+            'tariff'        => 'required|exists:App\Models\Tariff,id',
+            'address'       => 'required|max:512',
+            'delivery_time' => [
+                'required',
+                'date_format:U',
+                'after_or_equal:today',
+                /**
+                 * Check valid delivery day for selected tariff @todo move to rule class
+                 */
+                function (string $attribute, string $value, callable $fail) use ($tariff) {
+                    $tariff = Tariff::findOrFail($tariff);
+                    $date = date('w', (int)$value);
+                    if (!in_array($date, $tariff->delivery_days)) {
+                        $fail('Choose a correct day from the tariff.');
+                    }
+                },
+            ],
         ];
     }
 
@@ -43,8 +62,7 @@ class StoreOrderRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required'  => 'A name is required',
-            'phone.required' => 'A phone is required',
+            'delivery_time.required'    => 'Delivery day field is required.',
         ];
     }
 

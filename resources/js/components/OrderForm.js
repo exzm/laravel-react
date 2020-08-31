@@ -2,6 +2,8 @@ import React from 'react';
 import DayPicker from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
 import API from '../api';
+import ErrorField from './ErrorField';
+import OrdersList from './OrdersList';
 
 class OrderForm extends React.Component {
 
@@ -14,6 +16,7 @@ class OrderForm extends React.Component {
             price: null,
             delivery_time: null,
             errors: {},
+            orders: [],
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -22,12 +25,20 @@ class OrderForm extends React.Component {
     }
 
     async componentDidMount() {
+
         await API.get('/api/tariffs').then(res => {
             const tariffs = res.data;
             this.setState({
                 tariffs: tariffs,
                 disable_days: this.getDisableDays(tariffs[0].delivery_days),
                 price: tariffs[0].price,
+            });
+        });
+
+        await API.get('/api/orders').then(res => {
+            const orders = res.data;
+            this.setState({
+                orders: orders,
             });
         });
     }
@@ -39,7 +50,10 @@ class OrderForm extends React.Component {
         data.set('delivery_time', this.state.delivery_time);
 
         API.post('/api/orders/store', data).then(response => {
-            console.log(response);
+            const orders =  [...this.state.orders, response.data];
+            this.setState({
+                orders: orders,
+            });
         }).catch(error => {
             this.setState({
                 errors: error.response.data.errors,
@@ -72,13 +86,7 @@ class OrderForm extends React.Component {
     }
 
     getDisableDays(delivery_days) {
-        return [0, 1, 2, 3, 4, 5, 6].filter(
-            day => !delivery_days.includes(day));
-    }
-
-    getError(field) {
-        console.log(this.state.errors[field]);
-        return this.state.errors[field];
+        return [0, 1, 2, 3, 4, 5, 6].filter(day => !delivery_days.includes(day));
     }
 
     render() {
@@ -89,60 +97,44 @@ class OrderForm extends React.Component {
 
                 <h4 className="mb-5 h4">Example order page</h4>
 
-                <form className="needs-validation" onSubmit={this.handleSubmit}
-                      onChange={this.handleChange}>
+                <form className="needs-validation" onSubmit={this.handleSubmit} onChange={this.handleChange}>
                     <div className="row">
                         <div className="col-md-8">
                             <div className="form-row">
                                 <div className="col-md-6 mb-3">
                                     <label>Name</label>
-                                    <input name='name'
-                                           type="text" className="form-control"
-                                           placeholder="Name"/>
-                                    <div className="invalid-feedback">
-                                        {this.getError('name')}
-                                    </div>
+                                    <input name='name' type="text" className="form-control" placeholder="Name"/>
+                                    <ErrorField errors={this.state.errors} name="name"/>
                                 </div>
                                 <div className="col-md-6 mb-3">
                                     <label>Phone</label>
-                                    <input name="phone"
-                                           type="text" className="form-control"
-                                           placeholder="Phone"/>
-                                    <div className="valid-feedback">
-                                        Looks good!
-                                    </div>
+                                    <input name="phone" type="text" className="form-control" placeholder="Phone"/>
+                                    <ErrorField errors={this.state.errors} name="phone"/>
                                 </div>
                             </div>
                             <div className="form-row">
                                 <div className="col-md-6 mb-3">
                                     <label>Delivery address</label>
-                                    <input name="address"
-                                           type="text" className="form-control"
+                                    <input name="address" type="text" className="form-control"
                                            placeholder="Delivery address"/>
-                                    <div className="valid-feedback">
-                                        Looks good!
-                                    </div>
+                                    <ErrorField errors={this.state.errors} name="address"/>
                                 </div>
                                 <div className="col-md-5 mb-3">
                                     <label>Tariff</label>
-                                    <select name="tariff"
-                                            onChange={this.handleChangeTariff}
-                                            className="form-control">
-                                        {this.state.tariffs &&
-                                        this.state.tariffs.map(
-                                            (item) => <option
-                                                key={item.id}
-                                                value={item.id}>
-                                                {item.name}
-                                            </option>)}
+                                    <select name="tariff" onChange={this.handleChangeTariff} className="form-control">
+                                        {
+                                            this.state.tariffs &&
+                                            this.state.tariffs.map(
+                                                (item) => <option key={item.id} value={item.id}>{item.name}</option>)
+                                        }
                                     </select>
-                                    <div className="valid-feedback">
-                                        Looks good!
-                                    </div>
+                                    <ErrorField errors={this.state.errors} name="tariff"/>
                                 </div>
                                 <div className="col-md-1 mb-3">
                                     <label>Price</label>
-                                    <b>{this.state.price} $</b>
+                                    <div className="mt-2 ml-1">
+                                        <b>{this.state.price}$</b>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -154,17 +146,15 @@ class OrderForm extends React.Component {
                                                {daysOfWeek: this.state.disable_days},
                                                {before: new Date()},
                                            ]}/>
-                                <div className="valid-feedback">
-                                    Looks good!
-                                </div>
+                                <ErrorField errors={this.state.errors} name="delivery_time"/>
                             </div>
                         </div>
                     </div>
 
 
-                    <button className="btn btn-primary" type="submit">Submit
-                    </button>
+                    <button className="btn btn-primary" type="submit">Submit</button>
                 </form>
+                <OrdersList orders={this.state.orders}/>
             </div>
         );
     }

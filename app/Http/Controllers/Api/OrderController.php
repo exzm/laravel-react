@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreOrderRequest;
 use App\Models\Order;
+use App\Repositories\OrderRepository;
 use App\Services\StoreOrderService;
 
 class OrderController extends Controller
@@ -12,11 +13,10 @@ class OrderController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        //
+        return (new OrderRepository())->getAll();
     }
 
     /**
@@ -31,16 +31,4 @@ class OrderController extends Controller
         return (new StoreOrderService())->save($request);
     }
 
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }
