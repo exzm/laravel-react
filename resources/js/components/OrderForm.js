@@ -50,9 +50,10 @@ class OrderForm extends React.Component {
         data.set('delivery_time', this.state.delivery_time);
 
         API.post('/api/orders/store', data).then(response => {
-            const orders =  [...this.state.orders, response.data];
+            const orders = [...this.state.orders, response.data];
             this.setState({
                 orders: orders,
+                errors: {},
             });
         }).catch(error => {
             this.setState({

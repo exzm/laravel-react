@@ -5,8 +5,6 @@ ARG user
 ARG uid
 
 RUN apt-get update && apt-get upgrade -y
-
-RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y \
     libxml2-dev \
     build-essential \
@@ -45,6 +43,7 @@ RUN apt-get install -y \
     && apt-get clean && apt-get autoremove -y
 
 ADD ./ /app
+
 WORKDIR /app
 
 RUN useradd -G www-data,root -u $uid -d /app $user

@@ -7,5 +7,7 @@ COPY package*.json ./
 RUN npm install
 COPY . .
 
-CMD ["npm", "run", "watch"]
+RUN npm run production
+
+RUN rm -rf node_modules/
 

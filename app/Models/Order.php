@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
+ * @property integer $id
+ * @property integer $client_id
+ * @property integer tariff_id
  * @property integer $delivery_time
- * @property string $address
+ * @property string  $address
  * */
-
 class Order extends Model
 {
     protected $guarded = [];
